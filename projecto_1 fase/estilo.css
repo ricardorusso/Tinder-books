@@ -1,0 +1,50 @@
+h1{
+    text-align: center; 
+ }
+p{text-align: justify;}
+
+img{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 400px;
+}
+ 
+.btlikecolor{
+    background-color: green;
+
+    }
+.btdislikecolor{
+        background-color: red;
+        
+    }
+/* background-image: url(http://revistaicone.com/v1/wp-content/uploads/2015/05/livros2.jpg) */
+
+.book{
+    display: none;
+}
+
+.book.active{
+    display: block;
+  }
+  
+body{
+    /* padding-top: 20px;
+    padding-bottom: 10px; */
+
+      
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    text-align: center;
+
+    margin-left: 13%;
+
+    margin-right:13%;
+
+    border: 1px solid black;
+}
+
+br{
+    text-align: left;
+}
