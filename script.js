@@ -10,7 +10,7 @@
 // $('.buttonlike').click(function()
 // {
 //     contar1();
-    
+
 //     $('div').next().css( "display", 'block');
 // });
 
@@ -35,10 +35,10 @@
 
 //     $current.removeClass('active');
 //     $next.addClass('active');
-                                                                                            
+
 // });
 
-                                                           // maneira do andre
+// maneira do andre
 
 // $('.book button').click(function(){
 
@@ -51,7 +51,7 @@
 //         // $next = $current.next();
 //         $next = $('.book:first-of-type');
 
-        
+
 //     }
 
 
@@ -61,21 +61,21 @@
 
 // });
 
- // $current = $(this).addClass('active');
-    // $next = $current.removeClass('active');
+// $current = $(this).addClass('active');
+// $next = $current.removeClass('active');
 
-                                                            //maneira que eu fiz 
+//maneira que eu fiz 
 
 // $('.book').click(function(){
-   
+
 //     var opinion = $(this).attr('data-opinion');
 
 //     var $current = $('.book').addClass('active');
 //     var $next = $(this).next('.book').removeClass('active');
-   
+
 //     // $(this).addClass('active')                         /*$(this) é o objeto onde nos estamos*/
 //     // .next('.book').removeClass('active');
-    
+
 //     if ($next.length ==  0) {
 //         $('.book').first('.book').removeClass('active')
 
@@ -117,60 +117,60 @@
 // }
 
 
-class Library{
-    constructor(){
+class Library {
+    constructor() {
         this.books = [];
         this.seenBooks = [];
-        this.GetBooks("saramago");
-        
+        // this.GetBooks($(".search").val(""));
+
     }
 
-    Load(book){
-        if(this.books.length == 0){
+    Load(book) {
+        if (this.books.length == 0) {
             $(".endpage").css("display", "block");
             $(".book").css("display", "none");
             var obj = this;
-            this.seenBooks.forEach(function(v,i){
+            this.seenBooks.forEach(function (v, i) {
                 var like = "";
-                
+
                 like += "<b>" + obj.seenBooks[i].title + "</b>" + " -  " + obj.seenBooks[i].opinion + "<br>";
                 // console.log(like);
-               
+
                 $('#stat').append(like);
             });
-            
-        }
-        else{
-        $('.book h1').text(book.title);
-        $('.book img').attr("src",book.img);
-        $('.book p').text(book.description);
-        $('.book a').attr("href", book.link);
-        $('.book a').text("More Info");}
-    
 
-    
+        }
+        else {
+            $('.book h1').text(book.title);
+            $('.book img').attr("src", book.img);
+            $('.book p').text(book.description);
+            $('.book a').attr("href", book.link);
+            $('.book a').text("More Info");
+        }
+
+
+
         // books.links.forEach(function(v,i){
         //     $(".book a").eq(i).text(v.text);
         //     $(".book a").eq(i).attr("href",v.url);
         // })
     }
-    NextBook(){
-        
+    NextBook() {
         this.seenBooks.push(this.books[0]);
         this.books.shift(); //ou slice (0,1)
         this.Load(this.books[0]);
-        
-        
+
+
     }
-    GetBooks(search){
+    GetBooks(search) {
         var obj = this;
         $.ajax({
             url: "https://www.googleapis.com/books/v1/volumes?q=" + search,
-            
-        }).done(function(data){
+
+        }).done(function (data) {
             //quando o pedido ajax terminar com sucesso
             // console.log(data);
-            data.items.forEach(function(v,i){
+            data.items.forEach(function (v, i) {
                 var book = {
                     title: v.volumeInfo.title,
                     description: v.volumeInfo.description,
@@ -178,49 +178,108 @@ class Library{
                     opinion: '',
                     link: v.volumeInfo.infoLink,
                 }
-                
-                
+
+
                 // obj.data.items.book.opinion += data-Opinion;
                 obj.books.push(book);
             });
-            
+
             obj.Load(obj.books[0]);
         });
 
     }
+    Start() {
+        this.GetBooks($(".search").val());
+
+        $(".book").css("display", "block");
+        $(".startpage").css("display", "none");
+    }
+    newBooks() {
+        // location.reload();
+        $(".startpage").css("display", "block");
+        // $(".book").css("display", "none");
+        $(".endpage").css("display", "none");
+        $(".endpage p").empty();
+        $(".search").val("");
+    }
+    more(n) {
+        
+        $(".book").css("display", "block");
+        $(".startpage").css("display", "none");
+        $(".endpage").css("display", "none");
+        var obj = this;
+        $.ajax({
+            url: "https://www.googleapis.com/books/v1/volumes?q=" + $(".search").val() + "&startIndex=" + n,
+
+        }).done(function (data) {
+            //quando o pedido ajax terminar com sucesso
+            // console.log(data);
+            data.items.forEach(function (v, i) {
+                var book = {
+                    title: v.volumeInfo.title,
+                    description: v.volumeInfo.description,
+                    img: v.volumeInfo.imageLinks.thumbnail,
+                    opinion: '',
+                    link: v.volumeInfo.infoLink,
+                }
+
+
+                // obj.data.items.book.opinion += data-Opinion;
+                obj.books.push(book);
+            });
+
+            obj.Load(obj.books[0]);
+        });
+        $(".endpage p").empty();
+    }
+
 }
 
 
-// passar o livro q acabamos de ver para o seenbookss
 
+
+// passar o livro q acabamos de ver para o seenbookss
+var n = 0;
 var lib = new Library();
-$('.book button').click(function(){
-    if(lib.books.length > 0)
-    lib.books[0].opinion = $(this).attr("data-Opinion");
+$('.book button').click(function () {
+    if (lib.books.length > 0)
+        lib.books[0].opinion = $(this).attr("data-Opinion");
     lib.NextBook();
 });
 
-$("#r").click(function(){
+$("#r").click(function () {
 
-    lib.seenBooks.forEach(function(v,i){
-    lib.books.push(v);
-    lib.seenBooks =[]
+    lib.seenBooks.forEach(function (v, i) {
+        lib.books.push(v);
+        lib.seenBooks = []
 
     });
-    
+
     $(".book").css("display", "block");
     $(".endpage").css("display", "none");
     $("#stat").empty();
 });
 
-$(".starpage button").click(function(){
-    $(".book").css("display", "block");
- $(".search").input.search()
- 
- });
+$(".startpage button").click(function () {
+    lib.Start()
+});
+
+$(".newBooks").click(function () {
+    lib.newBooks()
+});
+
+$(".more").click(function () {
+   
+    lib.more(n+=10);
+    // console.log(n);
+});
+
+
+
+
 // lib.seenBooks.forEach(function(v,i){
 //     var like = "";
-    
+
 //     like += lib.seenBooks[i].title + " " + lib.seenBooks[i].opinion + " ";
 //     console.log(like);
 //     $('#stat').html("<br>", like);
